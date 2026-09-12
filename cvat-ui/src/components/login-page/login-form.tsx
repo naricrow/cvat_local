@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import Form from 'antd/lib/form';
 import Button from 'antd/lib/button';
@@ -39,6 +40,7 @@ function LoginFormComponent(props: Props): JSX.Element {
         fetching, onSubmit, renderResetPassword, renderRegistrationComponent, renderBasicLoginComponent,
     } = props;
 
+    const intl = useIntl();
     const authQuery = useAuthQuery();
     const [form] = Form.useForm();
     const [credential, setCredential] = useState('');
@@ -58,7 +60,7 @@ function LoginFormComponent(props: Props): JSX.Element {
         <Col className='cvat-credentials-link'>
             <Text strong>
                 <Link to={{ pathname: '/auth/password/reset', search: resetSearch }}>
-                    Forgot password?
+                    <FormattedMessage id='login.form.forgotPassword' defaultMessage='Forgot password?' />
                 </Link>
             </Text>
         </Col>
@@ -85,13 +87,14 @@ function LoginFormComponent(props: Props): JSX.Element {
                         <Row>
                             <Col className='cvat-credentials-link'>
                                 <Text strong>
-                                    New user?&nbsp;
+                                    <FormattedMessage id='login.form.newUser' defaultMessage='New user?' />
+                                    &nbsp;
                                     <Link to={{
                                         pathname: '/auth/register',
                                         search: authQuery ? new URLSearchParams(authQuery).toString() : '',
                                     }}
                                     >
-                                        Create an account
+                                        <FormattedMessage id='login.form.createAccount' defaultMessage='Create an account' />
                                     </Link>
                                 </Text>
                             </Col>
@@ -103,7 +106,9 @@ function LoginFormComponent(props: Props): JSX.Element {
                 }
             </Row>
             <Col>
-                <Title level={2}> Sign in </Title>
+                <Title level={2}>
+                    <FormattedMessage id='login.form.title' defaultMessage='Sign in' />
+                </Title>
             </Col>
             <Form
                 className={`cvat-login-form ${credential ? 'cvat-login-form-extended' : ''}`}
@@ -120,7 +125,14 @@ function LoginFormComponent(props: Props): JSX.Element {
                         >
                             <Input
                                 autoComplete='credential'
-                                prefix={<Text>Email or username</Text>}
+                                prefix={(
+                                    <Text>
+                                        <FormattedMessage
+                                            id='login.form.credentialPlaceholder'
+                                            defaultMessage='Email or username'
+                                        />
+                                    </Text>
+                                )}
                                 className={credential ? 'cvat-input-floating-label-above' : 'cvat-input-floating-label'}
                                 suffix={credential && (
                                     <Icon
@@ -146,14 +158,20 @@ function LoginFormComponent(props: Props): JSX.Element {
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Please specify a password',
+                                            message: intl.formatMessage({
+                                                id: 'login.form.passwordRequired',
+                                                defaultMessage: 'Please specify a password',
+                                            }),
                                         },
                                     ]}
                                 >
                                     <CVATSigningInput
                                         type={CVATInputType.PASSWORD}
                                         id='password'
-                                        placeholder='Password'
+                                        placeholder={intl.formatMessage({
+                                            id: 'login.form.passwordPlaceholder',
+                                            defaultMessage: 'Password',
+                                        })}
                                         autoComplete='password'
                                     />
                                 </Form.Item>
@@ -168,7 +186,7 @@ function LoginFormComponent(props: Props): JSX.Element {
                                         disabled={!credential}
                                         htmlType='submit'
                                     >
-                                        Next
+                                        <FormattedMessage id='login.form.next' defaultMessage='Next' />
                                     </Button>
                                 </Form.Item>
                             )
